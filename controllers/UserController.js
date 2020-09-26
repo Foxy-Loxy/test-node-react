@@ -1,8 +1,5 @@
 const db = require('../models');
-
-const index = (req, res) => {
-
-}
+const parsingService = require('../services/parsing');
 
 function validateEmail(email) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -22,6 +19,8 @@ const subscription = async (req, res) => {
   }
   try {
     await  db.User.upsert({email, price});
+    await parsingService.getLatestPrice();
+    await parsingService.comparePriceForUser({email, price})
   } catch (e) {
     res.status(500).send('something went wrong =(');
   }

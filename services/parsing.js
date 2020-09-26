@@ -2,6 +2,8 @@ const db = require('../models');
 const request = require('request-promise');
 const {Op} = require("sequelize");
 const config = require('../config');
+const cron = require('node-cron');
+const notificationService = require('./notification');
 
 const getLatestPrice = async () => {
   const options = {
@@ -28,7 +30,7 @@ const getUsdCurrency = async () => {
   return response.ethereum.usd;
 }
 
-const compareLatestPrice = async () => {
+const comparePriceForUsers = async () => {
   try {
     const currentCurrency = getUsdCurrency();
     const getLastRecord = await db.Price.findOne({
@@ -44,11 +46,33 @@ const compareLatestPrice = async () => {
         isSent: false,
       }
     })
+
+    await notificationService.sentNotifications(usersToUpdate);
   } catch (e) {
     console.log(e);
   }
 }
 
+const comparePriceForUser = async ({ email, price }) => {
+  try {
+    const currentCurrency = getUsdCurrency();
+    const getLastRecord = await db.Price.findOne({
+      order: [['created_at', 'DESC']],
+    });
+    const ethToUsd = currentCurrency * getLastRecord;
+    if (price > ethToUsd) {
+      await notificationService.sentNotifications([{ email, price }]);
+    }
+  } catch (e) {
+    console.log(price);
+  }
+}
+
+const startCroneJob = () => {
+  cron.schedule('0 * * * *', getLatestPrice, {});
+  cron.schedule('5 * * * *', comparePriceForUsers, {});
+}
+
 module.exports = {
-  compareLatestPrice, getLatestPrice
+  comparePriceForUsers, getLatestPrice, startCroneJob, comparePriceForUser
 }

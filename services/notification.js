@@ -12,7 +12,7 @@ const formMes = ({email}) => {
   };
 }
 
-const sentNotification = async (users) => {
+const sentNotifications = async (users) => {
   try {
     const promises = users.map(user => sgMail.send(formMes(user)));
     await Promise.all(promises);
@@ -21,4 +21,4 @@ const sentNotification = async (users) => {
   }
 }
 
-module.exports = { sentNotification };
+module.exports = { sentNotifications, sentNotification };
