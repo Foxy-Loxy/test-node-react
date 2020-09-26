@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => sequelize.define('User', {
   id: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => sequelize.define('User', {
     allowNull: false,
   },
   price: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
   },
   isSent: {
     type: DataTypes.BOOLEAN,

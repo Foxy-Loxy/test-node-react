@@ -4,13 +4,13 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
       return queryInterface.createTable('Prices', {
         id: {
-          type: Sequelize.INTEGER.UNSIGNED,
+          type: Sequelize.INTEGER,
           autoIncrement: true,
           allowNull: false,
           primaryKey: true
         },
         price: {
-          type: Sequelize.INTEGER.UNSIGNED,
+          type: Sequelize.INTEGER,
         },
         createdAt: {
           field: 'created_at',
