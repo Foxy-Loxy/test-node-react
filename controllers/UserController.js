@@ -1,5 +1,6 @@
 const db = require('../models');
 const parsingService = require('../services/parsing');
+const { v4: uuidv4 } = require('uuid');
 
 function validateEmail(email) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -18,7 +19,7 @@ const subscription = async (req, res) => {
     return;
   }
   try {
-    await  db.User.upsert({email, price});
+    await  db.User.upsert({email, price, token: uuidv4()});
     await parsingService.getLatestPrice();
     await parsingService.comparePriceForUser({email, price})
   } catch (e) {

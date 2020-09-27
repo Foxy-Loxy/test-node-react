@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
     allowNull: false
+  },
+  token: {
+    type: DataTypes.STRING(256),
+    allowNull: false,
   }
 }, {
   tableName: 'Users',
