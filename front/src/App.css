@@ -1,5 +1,27 @@
 .App {
-  text-align: center;
+  height: 100vh;
+  position: relative;
+}
+
+.form {
+  padding: 20px;
+  background-color: #01ff70;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputBlock p {
+  margin: 5px;
+}
+
+.submitBtn {
+  margin-top: 10px;
+
 }
 
 .App-logo {
