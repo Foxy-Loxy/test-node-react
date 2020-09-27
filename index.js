@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const parsingService = require('./services/parsing');
 const userRoutes = require('./routes/user');
 
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 parsingService.startCroneJob();
