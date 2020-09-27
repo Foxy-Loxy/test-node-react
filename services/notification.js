@@ -1,14 +1,14 @@
 const config = require('../config');
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(config.gridApiKey);
 
-const formMes = ({email}) => {
+const formMes = ({email, token}) => {
   return {
     to: email,
     from: config.email,
     subject: 'price went down',
     text: 'price went down',
-    html: '<strong>dfsldhf</strong>',
+    html: `<a href="localhost:3000/unsubscribe?token=${token}>unsubscribe</a>`,
   };
 }
 
@@ -21,4 +21,4 @@ const sentNotifications = async (users) => {
   }
 }
 
-module.exports = { sentNotifications, sentNotification };
+module.exports = { sentNotifications };

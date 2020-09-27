@@ -20,7 +20,18 @@ module.exports = (sequelize, DataTypes) => sequelize.define('User', {
   token: {
     type: DataTypes.STRING(256),
     allowNull: false,
-  }
+  },
+  createdAt: {
+    field: 'created_at',
+    allowNull: false,
+    type: DataTypes.DATE
+  },
+  updatedAt: {
+    field: 'updated_at',
+    allowNull: false,
+    type: DataTypes.DATE
+  },
 }, {
+  timestamps: true,
   tableName: 'Users',
 })

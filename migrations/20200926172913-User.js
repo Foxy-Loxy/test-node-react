@@ -21,11 +21,21 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         allowNull: false
-      }
+      },
+      createdAt: {
+        field: 'created_at',
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        field: 'updated_at',
+        allowNull: false,
+        type: Sequelize.DATE
+      },
     })
   },
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.dropTable('Users');
+    return queryInterface.dropTable('Users');
   }
 };

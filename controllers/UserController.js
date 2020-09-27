@@ -3,7 +3,7 @@ const parsingService = require('../services/parsing');
 const { v4: uuidv4 } = require('uuid');
 
 function validateEmail(email) {
-  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
   return re.test(String(email).toLowerCase());
 }
 
@@ -18,17 +18,39 @@ const subscription = async (req, res) => {
     res.status(400).send('invalid price');
     return;
   }
+
+  const token = uuidv4();
+
   try {
-    await  db.User.upsert({email, price, token: uuidv4()});
+    const user = await db.User.findOne({ where: { email }});
+    if (user) {
+      await user.update({ price });
+    } else {
+      await  db.User.create({email, price, token});
+    }
     await parsingService.getLatestPrice();
-    await parsingService.comparePriceForUser({email, price})
+    await parsingService.comparePriceForUser({email, price, token: user.token})
   } catch (e) {
     res.status(500).send('something went wrong =(');
   }
+  res.status(200);
+  res.end();
+}
+
+const unsubscription = async (req, res) => {
+  const token = req.query.token;
+  try {
+    await db.User.destroy( { where: { token }})
+  } catch (e) {
+    res.status(500).send('something went wrong =(');
+  }
+  res.status(200);
+  res.send('deleted from db');
+  res.end();
 }
 
 
 module.exports = {
-  index,
-  subscription
+  subscription,
+  unsubscription
 }

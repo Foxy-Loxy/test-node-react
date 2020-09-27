@@ -53,15 +53,15 @@ const comparePriceForUsers = async () => {
   }
 }
 
-const comparePriceForUser = async ({ email, price }) => {
+const comparePriceForUser = async ({ email, price, token }) => {
   try {
-    const currentCurrency = getUsdCurrency();
+    const currentCurrency = await getUsdCurrency();
     const getLastRecord = await db.Price.findOne({
       order: [['created_at', 'DESC']],
     });
-    const ethToUsd = currentCurrency * getLastRecord;
+    const ethToUsd = currentCurrency * getLastRecord.price;
     if (price > ethToUsd) {
-      await notificationService.sentNotifications([{ email, price }]);
+      await notificationService.sentNotifications([{ email, price, token }]);
     }
   } catch (e) {
     console.log(price);
