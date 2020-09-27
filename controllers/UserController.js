@@ -22,14 +22,14 @@ const subscription = async (req, res) => {
   const token = uuidv4();
 
   try {
-    const user = await db.User.findOne({ where: { email }});
+    let user = await db.User.findOne({ where: { email }});
     if (user) {
       await user.update({ price });
     } else {
-      await  db.User.create({email, price, token});
+      user = await  db.User.create({email, price, token});
     }
     await parsingService.getLatestPrice();
-    await parsingService.comparePriceForUser({email, price, token: user.token})
+    await parsingService.comparePriceForUser(user)
   } catch (e) {
     res.status(500).send('something went wrong =(');
   }
@@ -39,6 +39,7 @@ const subscription = async (req, res) => {
 
 const unsubscription = async (req, res) => {
   const token = req.query.token;
+
   try {
     await db.User.destroy( { where: { token }})
   } catch (e) {

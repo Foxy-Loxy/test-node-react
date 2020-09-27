@@ -8,7 +8,7 @@ const formMes = ({email, token}) => {
     from: config.email,
     subject: 'price went down',
     text: 'price went down',
-    html: `<a href="localhost:3000/unsubscribe?token=${token}>unsubscribe</a>`,
+    html: `price went down1`,
   };
 }
 

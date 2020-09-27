@@ -48,23 +48,26 @@ const comparePriceForUsers = async () => {
     })
 
     await notificationService.sentNotifications(usersToUpdate);
+    const usersId = usersToUpdate.map(user => user.id);
+    await db.User.update({ isSent: true }, { where: { id: usersId }})
   } catch (e) {
     console.log(e);
   }
 }
 
-const comparePriceForUser = async ({ email, price, token }) => {
+const comparePriceForUser = async (user) => {
   try {
     const currentCurrency = await getUsdCurrency();
     const getLastRecord = await db.Price.findOne({
       order: [['created_at', 'DESC']],
     });
     const ethToUsd = currentCurrency * getLastRecord.price;
-    if (price > ethToUsd) {
-      await notificationService.sentNotifications([{ email, price, token }]);
+    if (user.price > ethToUsd) {
+      await notificationService.sentNotifications([user]);
+      await user.update({ isSent: true });
     }
   } catch (e) {
-    console.log(price);
+    console.log(e);
   }
 }
 
